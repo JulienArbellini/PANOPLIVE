@@ -42,7 +42,15 @@
     "description": "L'album physique est disponible. Un objet de verre et de papier pour prolonger l'immersion.",
     "ctaLabel": "Commander l'objet",
     "ctaUrl": "#",
-    "coverImageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329935/pochette_album_carre%CC%81_uvvcfo.jpg"
+    "coverImageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329935/pochette_album_carre%CC%81_uvvcfo.jpg",
+    "streaming": {
+      "spotifyEmbedUrl": "",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "deezerUrl": "",
+      "youtubeMusicUrl": "",
+      "youtubePlaylistUrl": ""
+    }
   },
   "clips": {
     "label": "Visions",
@@ -52,8 +60,8 @@
         "id": "clip-1",
         "title": "Traverser le verre",
         "caption": "Réalisé par Studio Reflet . 2024",
-        "imageUrl": "https://www.youtube.com/watch?v=ut2V3Zx0ed4",
-        "videoUrl": "#"
+        "imageUrl": "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=1000",
+        "videoUrl": "https://www.youtube.com/watch?v=ut2V3Zx0ed4"
       },
       {
         "id": "clip-2",

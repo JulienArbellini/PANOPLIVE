@@ -9,6 +9,7 @@ Site vitrine du groupe Panoplie, en Next.js, avec une interface d'edition admin 
 - Contenu source: `content/site.json`
 - Publication: commit direct sur `main` via GitHub API
 - Upload images: Cloudinary signe cote serveur
+- Flux social auto: YouTube + Instagram (optionnel)
 - Analytics: Vercel Analytics
 
 ## Demarrage local
@@ -52,6 +53,17 @@ Si ces variables ne sont pas definies, l'API publie en mode local (ecriture fich
 - `CLOUDINARY_API_SECRET`
 
 Depuis `/admin`, chaque champ image propose un upload vers Cloudinary.
+
+## Flux social automatique (optionnel)
+
+La section `Instantanes` peut afficher automatiquement les dernieres publications reseaux.
+
+- `YOUTUBE_CHANNEL_ID` : ID de chaine YouTube pour recuperer les dernieres videos via le feed officiel.
+- `YOUTUBE_API_KEY` : active la pagination via YouTube Data API (recommande si `SOCIAL_POSTS_LIMIT` > ~15).
+- `INSTAGRAM_ACCESS_TOKEN` : token Instagram (Basic Display / Graph) pour lire `me/media`.
+- `SOCIAL_POSTS_LIMIT` : nombre de publications affichees (defaut `6`).
+
+Si ces variables ne sont pas configurees (ou si un provider est indisponible), le site garde le fallback statique depuis `content/site.json`.
 
 ## Workflow edition
 

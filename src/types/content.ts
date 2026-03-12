@@ -18,6 +18,14 @@ export type AlbumSection = {
   ctaLabel: string;
   ctaUrl: string;
   coverImageUrl: string;
+  streaming?: {
+    spotifyEmbedUrl?: string;
+    spotifyUrl?: string;
+    appleMusicUrl?: string;
+    deezerUrl?: string;
+    youtubeMusicUrl?: string;
+    youtubePlaylistUrl?: string;
+  };
 };
 
 export type ClipItem = {
