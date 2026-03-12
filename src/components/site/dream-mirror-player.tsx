@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type PointerEventHandler } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEventHandler } from "react";
 import { useYouTubePlaylistPlayer, type DreamPlayerState } from "@/components/site/use-youtube-playlist-player";
 
 type Props = {
@@ -99,6 +99,7 @@ export function DreamMirrorPlayer({ playlistId }: Props) {
       `dream-mirror-shell ${isMobile ? "is-mobile" : ""} ${isPlaying ? "is-playing" : ""} ${state === "error" ? "is-error" : ""}`,
     [isMobile, isPlaying, state],
   );
+  const spectrumBars = useMemo(() => Array.from({ length: isMobile ? 12 : 16 }, (_, index) => index), [isMobile]);
 
   return (
     <div className="dream-mirror-player w-full max-w-xl">
@@ -111,14 +112,38 @@ export function DreamMirrorPlayer({ playlistId }: Props) {
         onPointerCancel={onPointerCancel}
         style={{ touchAction: "pan-y" }}
       >
+        <div className="dream-mirror-vignette" />
+        <div className="dream-mirror-noise" />
+        <div className="dream-mirror-nebula dream-mirror-nebula-a" />
+        <div className="dream-mirror-nebula dream-mirror-nebula-b" />
         <div className="dream-mirror-backglow" />
+        <div className="dream-mirror-wave dream-mirror-wave-1" />
+        <div className="dream-mirror-wave dream-mirror-wave-2" />
+        <div className="dream-mirror-wave dream-mirror-wave-3" />
         <div className="dream-mirror-ring dream-mirror-ring-outer" />
         <div className="dream-mirror-ring dream-mirror-ring-inner" />
 
-        <div className="dream-mirror-orb">
-          <div className="dream-mirror-orb-reflection" />
-          <div className="dream-mirror-orb-fracture" />
-          <div className="dream-mirror-orb-core">{isPlaying ? "II" : "▶"}</div>
+        <div className="dream-mirror-eq">
+          {spectrumBars.map((bar) => (
+            <span
+              // CSS vars pilotent l'orientation et le retard de chaque barre.
+              key={`bar-${bar}`}
+              style={
+                {
+                  "--bar-rotate": `${(360 / spectrumBars.length) * bar}deg`,
+                  "--bar-delay": `${(bar % 6) * -0.2}s`,
+                } as CSSProperties
+              }
+            />
+          ))}
+        </div>
+
+        <div className="dream-mirror-orb-wrap">
+          <div className="dream-mirror-orb">
+            <div className="dream-mirror-orb-reflection" />
+            <div className="dream-mirror-orb-fracture" />
+            <div className="dream-mirror-orb-core">{isPlaying ? "II" : "▶"}</div>
+          </div>
         </div>
 
         <div className="dream-mirror-gesture dream-mirror-gesture-left">←</div>
@@ -147,21 +172,21 @@ export function DreamMirrorPlayer({ playlistId }: Props) {
         <button
           type="button"
           onClick={previous}
-          className="rounded border border-white/20 px-2 py-1 text-[10px] text-white/70 uppercase hover:bg-white/10"
+          className="rounded-full border border-cyan-200/20 bg-slate-950/60 px-3 py-1 text-[10px] tracking-[0.15em] text-white/75 uppercase hover:border-cyan-200/45 hover:bg-cyan-400/10"
         >
           Prev
         </button>
         <button
           type="button"
           onClick={playPause}
-          className="rounded border border-white/20 px-2 py-1 text-[10px] text-white/70 uppercase hover:bg-white/10"
+          className="rounded-full border border-cyan-200/25 bg-slate-950/70 px-4 py-1 text-[10px] tracking-[0.2em] text-cyan-50 uppercase hover:border-cyan-200/55 hover:bg-cyan-400/15"
         >
           {isPlaying ? "Pause" : "Play"}
         </button>
         <button
           type="button"
           onClick={next}
-          className="rounded border border-white/20 px-2 py-1 text-[10px] text-white/70 uppercase hover:bg-white/10"
+          className="rounded-full border border-cyan-200/20 bg-slate-950/60 px-3 py-1 text-[10px] tracking-[0.15em] text-white/75 uppercase hover:border-cyan-200/45 hover:bg-cyan-400/10"
         >
           Next
         </button>
