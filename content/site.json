@@ -1,0 +1,155 @@
+{
+  "seo": {
+    "title": "Panoplie | L'Autre Côté du Miroir",
+    "description": "Site officiel du groupe Panoplie. Clips, concerts, univers visuel et informations de contact."
+  },
+  "navigation": {
+    "logo": "Φ",
+    "links": [
+      { "label": "Éveil", "href": "#intro" },
+      { "label": "Réflexion", "href": "#album" },
+      { "label": "Visions", "href": "#clips" },
+      { "label": "Échos", "href": "#concerts" },
+      { "label": "Fragments", "href": "#groupe" }
+    ]
+  },
+  "backgroundImageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329473/bg-panoplie_q0los7.png",
+  "hero": {
+    "mantra": "Se voir de l'extérieur",
+    "bandName": "PANOPLIE",
+    "subtitle": "La Ballade aux Miroirs",
+    "kicker": "Une déambulation psychédélique narrative",
+    "mirrorImageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329473/miroir_fg7mzh.png"
+  },
+  "album": {
+    "label": "L'Oeuvre",
+    "title": "L'Espace entre les Secondes",
+    "description": "L'album physique est disponible. Un objet de verre et de papier pour prolonger l'immersion.",
+    "ctaLabel": "Commander l'objet",
+    "ctaUrl": "#",
+    "coverImageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329935/pochette_album_carre%CC%81_uvvcfo.jpg"
+  },
+  "clips": {
+    "label": "Visions",
+    "title": "Mirages Animés",
+    "items": [
+      {
+        "id": "clip-1",
+        "title": "Traverser le verre",
+        "caption": "Réalisé par Studio Reflet . 2024",
+        "imageUrl": "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=1000",
+        "videoUrl": "#"
+      },
+      {
+        "id": "clip-2",
+        "title": "L'Autre Moi",
+        "caption": "Réalisé par Panoplie Visuals . 2024",
+        "imageUrl": "https://images.unsplash.com/photo-1514525253361-bee8718a34e1?auto=format&fit=crop&q=80&w=1000",
+        "videoUrl": "#"
+      }
+    ]
+  },
+  "concerts": {
+    "label": "Échos",
+    "title": "Résonances Live",
+    "items": [
+      {
+        "id": "concert-1",
+        "dateDisplay": "12.04",
+        "venue": "La Gaîté Lyrique",
+        "city": "Paris, FR",
+        "ctaLabel": "Réserver",
+        "ctaUrl": "#",
+        "soldOut": false
+      },
+      {
+        "id": "concert-2",
+        "dateDisplay": "24.05",
+        "venue": "Le Transbordeur",
+        "city": "Lyon, FR",
+        "ctaLabel": "Réserver",
+        "ctaUrl": "#",
+        "soldOut": false
+      },
+      {
+        "id": "concert-3",
+        "dateDisplay": "02.06",
+        "venue": "Paloma",
+        "city": "Nîmes, FR",
+        "ctaLabel": "Complet",
+        "ctaUrl": "#",
+        "soldOut": true
+      }
+    ]
+  },
+  "group": {
+    "label": "Fragments d'Identités",
+    "title": "Le Groupe",
+    "members": [
+      {
+        "id": "member-gus",
+        "name": "Gus",
+        "roleText": "L'architecte sonore du vide. Ses accords sont des ponts jetés sur l'inconnu.",
+        "imageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773330263/GUS_2_gim1vc.jpg"
+      },
+      {
+        "id": "member-julien",
+        "name": "Julien",
+        "roleText": "Gardien du tempo déformé. Il sculpte le rythme comme on sculpte un mirage.",
+        "imageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329951/JUL_cqcbxa.jpg"
+      },
+      {
+        "id": "member-dub",
+        "name": "Dub",
+        "roleText": "La voix du reflet. Ses mots s'évaporent avant même d'être entendus.",
+        "imageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329899/DUB_4_sfnmio.jpg"
+      },
+      {
+        "id": "member-valentin",
+        "name": "Valentin",
+        "roleText": "Le maître des textures. Il manipule les fréquences comme des souvenirs.",
+        "imageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773330488/VAL_l03ygn.jpg"
+      },
+      {
+        "id": "member-lucas",
+        "name": "Lucas",
+        "roleText": "L'éclat résiduel. Il apporte la lumière pour que les ombres dansent librement.",
+        "imageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329919/LUCAS_bvtljg.jpg"
+      }
+    ]
+  },
+  "insta": {
+    "title": "Instantanés",
+    "handle": "@panoplie.musique",
+    "items": [
+      {
+        "id": "insta-1",
+        "imageUrl": "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?auto=format&fit=crop&q=80&w=600",
+        "alt": "Insta 1"
+      },
+      {
+        "id": "insta-2",
+        "imageUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=600",
+        "alt": "Insta 2"
+      },
+      {
+        "id": "insta-3",
+        "imageUrl": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=600",
+        "alt": "Insta 3"
+      },
+      {
+        "id": "insta-4",
+        "imageUrl": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&q=80&w=600",
+        "alt": "Insta 4"
+      }
+    ]
+  },
+  "footer": {
+    "copyright": "2026 . Panoplie . L'Autre Côté",
+    "contactEmail": "contact@panoplie.fr"
+  },
+  "social": {
+    "instagramUrl": "#",
+    "spotifyUrl": "#"
+  }
+}
