@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { SiteContent } from "@/types/content";
 import type { SocialPost } from "@/types/social";
+import { DreamMirrorPlayer } from "@/components/site/dream-mirror-player";
 import { InteractiveEffects } from "@/components/site/interactive-effects";
 
 type SitePageContentProps = {
@@ -91,45 +92,14 @@ function getYouTubeEmbedUrl(rawUrl: string): string | null {
   return `https://www.youtube-nocookie.com/embed/${id}`;
 }
 
-function getSpotifyEmbedUrl(rawUrl?: string): string | null {
-  const value = rawUrl?.trim();
-  if (!value) return null;
-
-  if (value.includes("open.spotify.com/embed/")) return value;
-
-  try {
-    const url = new URL(value);
-    const host = url.hostname.replace(/^www\./, "");
-    if (host !== "open.spotify.com") return null;
-
-    const chunks = url.pathname.split("/").filter(Boolean);
-    if (chunks.length < 2) return null;
-    const [kind, id] = chunks;
-    if (!id) return null;
-
-    if (["album", "track", "playlist"].includes(kind)) {
-      return `https://open.spotify.com/embed/${kind}/${id}`;
-    }
-  } catch {
-    return null;
-  }
-
-  return null;
-}
-
-function getYouTubePlaylistEmbedUrl(rawUrl?: string): string | null {
+function getYouTubePlaylistId(rawUrl?: string): string | null {
   const value = rawUrl?.trim();
   if (!value) return null;
 
   try {
     const url = new URL(value);
-    const host = url.hostname.replace(/^www\./, "");
-    if (!host.includes("youtube.com") && host !== "youtu.be") return null;
-
     const list = url.searchParams.get("list");
-    if (!list) return null;
-
-    return `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(list)}`;
+    return list ? list : null;
   } catch {
     return null;
   }
@@ -143,8 +113,7 @@ export function SitePageContent({
   onEditField,
 }: SitePageContentProps) {
   const albumStreaming = content.album.streaming ?? {};
-  const youtubePlaylistEmbedUrl = getYouTubePlaylistEmbedUrl(albumStreaming.youtubePlaylistUrl);
-  const spotifyEmbedUrl = getSpotifyEmbedUrl(albumStreaming.spotifyEmbedUrl || albumStreaming.spotifyUrl);
+  const youtubePlaylistId = getYouTubePlaylistId(albumStreaming.youtubePlaylistUrl);
   const platformLinks = [
     { id: "spotify", label: "Spotify", url: albumStreaming.spotifyUrl },
     { id: "apple", label: "Apple Music", url: albumStreaming.appleMusicUrl },
@@ -252,34 +221,18 @@ export function SitePageContent({
             </a>
           </EditableNode>
 
-          {editMode || spotifyEmbedUrl || platformLinks.length > 0 ? (
+          {editMode || youtubePlaylistId || platformLinks.length > 0 ? (
             <div className="space-y-5 pt-4">
               <EditableNode
                 editMode={editMode}
-                fieldId={youtubePlaylistEmbedUrl ? "album.streaming.youtubePlaylistUrl" : "album.streaming.spotifyEmbedUrl"}
+                fieldId="album.streaming.youtubePlaylistUrl"
                 onEdit={onEditField}
               >
-                {youtubePlaylistEmbedUrl ? (
-                  <iframe
-                    title="Playlist YouTube album"
-                    src={youtubePlaylistEmbedUrl}
-                    className="h-[232px] w-full max-w-xl rounded-md border border-white/10 bg-black/30"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                    loading="lazy"
-                  />
-                ) : spotifyEmbedUrl ? (
-                  <iframe
-                    title="Lecteur album Spotify"
-                    src={spotifyEmbedUrl}
-                    className="h-[152px] w-full max-w-xl rounded-md border border-white/10 bg-black/30"
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    loading="lazy"
-                  />
+                {youtubePlaylistId ? (
+                  <DreamMirrorPlayer playlistId={youtubePlaylistId} />
                 ) : (
                   <div className="max-w-xl rounded-md border border-dashed border-white/20 px-4 py-6 text-sm text-white/50">
-                    Ajoute une URL playlist YouTube (ou Spotify) pour afficher le lecteur.
+                    Ajoute une URL playlist YouTube pour activer le miroir liquide.
                   </div>
                 )}
               </EditableNode>

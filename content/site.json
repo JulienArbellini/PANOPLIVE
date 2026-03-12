@@ -44,7 +44,12 @@
     "ctaUrl": "#",
     "coverImageUrl": "https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329935/pochette_album_carre%CC%81_uvvcfo.jpg",
     "streaming": {
-      "spotifyEmbedUrl": "https://www.youtube.com/watch?v=mkd6gRxwCFk&list=PLyDSTc4ZCrzuNrqWwAT60TR_ucAfMMIb5"
+      "spotifyEmbedUrl": "https://www.youtube.com/watch?v=mkd6gRxwCFk&list=PLyDSTc4ZCrzuNrqWwAT60TR_ucAfMMIb5",
+      "spotifyUrl": "",
+      "appleMusicUrl": "",
+      "deezerUrl": "",
+      "youtubeMusicUrl": "",
+      "youtubePlaylistUrl": "https://www.youtube.com/watch?v=mkd6gRxwCFk&list=PLyDSTc4ZCrzuNrqWwAT60TR_ucAfMMIb5"
     }
   },
   "clips": {
