@@ -105,6 +105,14 @@ function getYouTubePlaylistId(rawUrl?: string): string | null {
   }
 }
 
+const STREAMING_FIELD_BY_PLATFORM_ID: Record<string, string> = {
+  spotify: "spotifyUrl",
+  apple: "appleMusicUrl",
+  deezer: "deezerUrl",
+  ytmusic: "youtubeMusicUrl",
+  ytplaylist: "youtubePlaylistUrl",
+};
+
 export function SitePageContent({
   content,
   latestPosts = [],
@@ -202,25 +210,6 @@ export function SitePageContent({
         </EditableNode>
 
         <div className="space-y-8 lg:col-span-7 lg:pl-24">
-          <EditableNode editMode={editMode} fieldId="album.label" onEdit={onEditField}>
-            <p className="mb-4 text-[9px] tracking-[0.5em] text-cyan-400 uppercase">{content.album.label}</p>
-          </EditableNode>
-          <EditableNode editMode={editMode} fieldId="album.title" onEdit={onEditField}>
-            <h2 className="cinzel mb-6 text-4xl md:text-7xl">{content.album.title}</h2>
-          </EditableNode>
-          <EditableNode editMode={editMode} fieldId="album.description" onEdit={onEditField}>
-            <p className="mb-10 max-w-lg text-lg opacity-60">{content.album.description}</p>
-          </EditableNode>
-          <EditableNode editMode={editMode} fieldId="album.ctaLabel" onEdit={onEditField}>
-            <a
-              href={content.album.ctaUrl}
-              className="inline-block border border-white/20 px-8 py-3 text-[10px] tracking-[0.4em] uppercase hover:bg-white hover:text-black transition-all"
-              {...linkBehavior}
-            >
-              {content.album.ctaLabel}
-            </a>
-          </EditableNode>
-
           {editMode || youtubePlaylistId || platformLinks.length > 0 ? (
             <div className="space-y-5 pt-4">
               <EditableNode
@@ -229,7 +218,7 @@ export function SitePageContent({
                 onEdit={onEditField}
               >
                 {youtubePlaylistId ? (
-                  <DreamMirrorPlayer playlistId={youtubePlaylistId} />
+                  <DreamMirrorPlayer playlistId={youtubePlaylistId} artworkUrl={"https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329473/bg-panoplie_q0los7.png"} />
                 ) : (
                   <div className="max-w-xl rounded-md border border-dashed border-white/20 px-4 py-6 text-sm text-white/50">
                     Ajoute une URL playlist YouTube pour activer le miroir liquide.
@@ -251,17 +240,7 @@ export function SitePageContent({
                   <EditableNode
                     key={platform.id}
                     editMode={editMode}
-                    fieldId={`album.streaming.${
-                      platform.id === "spotify"
-                        ? "spotifyUrl"
-                        : platform.id === "apple"
-                          ? "appleMusicUrl"
-                          : platform.id === "deezer"
-                            ? "deezerUrl"
-                            : platform.id === "ytmusic"
-                              ? "youtubeMusicUrl"
-                              : "youtubePlaylistUrl"
-                    }`}
+                    fieldId={`album.streaming.${STREAMING_FIELD_BY_PLATFORM_ID[platform.id] ?? "youtubePlaylistUrl"}`}
                     onEdit={onEditField}
                   >
                     <a

@@ -10,32 +10,42 @@ export function InteractiveEffects({ backgroundImageUrl }: { backgroundImageUrl:
     const cursorEye = document.getElementById("cursor-eye");
     const cursorGlow = document.getElementById("cursor-glow");
 
-    if (!isMobile && cursorEye && cursorGlow) {
-      const mouseHandler = (e: MouseEvent) => {
-        const { clientX, clientY } = e;
-        cursorEye.style.left = `${clientX}px`;
-        cursorEye.style.top = `${clientY}px`;
-        cursorGlow.animate({ left: `${clientX}px`, top: `${clientY}px` }, { duration: 500, fill: "forwards" });
-      };
+    if (isMobile || !cursorEye || !cursorGlow) return;
 
-      document.addEventListener("mousemove", mouseHandler);
+    const mouseHandler = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      cursorEye.style.left = `${clientX}px`;
+      cursorEye.style.top = `${clientY}px`;
+      cursorGlow.animate({ left: `${clientX}px`, top: `${clientY}px` }, { duration: 500, fill: "forwards" });
+    };
 
-      document.querySelectorAll("a, button, .member-card, .video-container, .concert-row").forEach((el) => {
-        el.addEventListener("mouseenter", () => {
-          cursorEye.style.width = "60px";
-          cursorEye.style.height = "60px";
-          cursorEye.style.backgroundColor = "rgba(0, 229, 255, 0.1)";
-        });
+    const enterHandler = () => {
+      cursorEye.style.width = "60px";
+      cursorEye.style.height = "60px";
+      cursorEye.style.backgroundColor = "rgba(0, 229, 255, 0.1)";
+    };
 
-        el.addEventListener("mouseleave", () => {
-          cursorEye.style.width = "20px";
-          cursorEye.style.height = "20px";
-          cursorEye.style.backgroundColor = "transparent";
-        });
+    const leaveHandler = () => {
+      cursorEye.style.width = "20px";
+      cursorEye.style.height = "20px";
+      cursorEye.style.backgroundColor = "transparent";
+    };
+
+    const interactiveNodes = Array.from(document.querySelectorAll("a, button, .member-card, .video-container, .concert-row"));
+
+    document.addEventListener("mousemove", mouseHandler);
+    interactiveNodes.forEach((node) => {
+      node.addEventListener("mouseenter", enterHandler);
+      node.addEventListener("mouseleave", leaveHandler);
+    });
+
+    return () => {
+      document.removeEventListener("mousemove", mouseHandler);
+      interactiveNodes.forEach((node) => {
+        node.removeEventListener("mouseenter", enterHandler);
+        node.removeEventListener("mouseleave", leaveHandler);
       });
-
-      return () => document.removeEventListener("mousemove", mouseHandler);
-    }
+    };
   }, []);
 
   useEffect(() => {
