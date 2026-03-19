@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import localFont from "next/font/local";
 import { Cinzel_Decorative, Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -19,6 +20,12 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
 });
 
+const wornas = localFont({
+  src: "../../public/fonts/wornas/Wornas.otf",
+  variable: "--font-wornas",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "PANOPLIVE",
   description: "Site officiel du groupe Panoplie.",
@@ -31,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${outfit.variable} ${cinzel.variable} ${playfair.variable} antialiased`}>
+      <body className={`${outfit.variable} ${cinzel.variable} ${playfair.variable} ${wornas.variable} antialiased`}>
         {children}
         <Analytics />
       </body>

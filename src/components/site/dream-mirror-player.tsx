@@ -2,7 +2,7 @@
 
 import * as THREE from "three";
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEventHandler, type RefObject } from "react";
-import { useYouTubePlaylistPlayer, type DreamPlayerState } from "@/components/site/use-youtube-playlist-player";
+import { useYouTubePlaylistPlayer } from "@/components/site/use-youtube-playlist-player";
 
 type Props = {
   playlistId: string;
@@ -164,18 +164,6 @@ void main() {
 }
 `;
 
-function statusLabel(state: DreamPlayerState, webcamState: WebcamState) {
-  if (state === "loading") return "Le miroir s'accorde a ta frequence...";
-  if (state === "ready") return "Appuyer pour liberer l'onde.";
-  if (state === "playing" && webcamState === "requesting") return "Activation du miroir...";
-  if (state === "playing" && webcamState === "granted") return "Miroir actif.";
-  if (state === "playing" && webcamState === "denied") return "Lecture active, webcam refusee.";
-  if (state === "playing" && webcamState === "unsupported") return "Lecture active, webcam indisponible.";
-  if (state === "playing") return "Vibration en cours.";
-  if (state === "paused") return "Le reflet retient son souffle.";
-  return "Le miroir se trouble.";
-}
-
 function hintLabel(hint: GestureHint) {
   if (hint === "play") return "Lecture";
   if (hint === "pause") return "Pause";
@@ -261,7 +249,7 @@ function redrawDiscLabel(canvas: HTMLCanvasElement, title: string) {
   context.fillStyle = "rgba(232, 216, 184, 0.9)";
   context.shadowColor = "rgba(197, 160, 89, 0.45)";
   context.shadowBlur = 16;
-  context.font = "600 28px Outfit, sans-serif";
+  context.font = '600 28px "Wornas personal use", serif';
   context.textAlign = "center";
   context.textBaseline = "middle";
 
@@ -860,14 +848,36 @@ export function DreamMirrorPlayer({
     pointerRef.current = null;
   };
 
+  const handlePrevious = () => {
+    previous();
+    showHint("previous");
+  };
+
+  const handlePlayToggle = async () => {
+    if (!isPlaying) await ensureWebcam();
+    if (!isPlaying) triggerRipple();
+    playPause();
+    showHint(isPlaying ? "pause" : "play");
+  };
+
+  const handleNext = () => {
+    next();
+    showHint("next");
+  };
+
+  const stopShellPointer: PointerEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
+  };
+
   const shellClass = useMemo(
     () =>
       `dream-liquid-shell ${isMobile ? "is-mobile" : ""} ${isPlaying ? "is-playing" : ""} ${state === "error" ? "is-error" : ""} ${webcamState === "granted" ? "has-webcam" : ""}`,
     [isMobile, isPlaying, state, webcamState],
   );
 
-  const hintText = isPlaying ? "Vibration en cours" : "Appuyer pour liberer l'onde";
+  const hintText = "Appuyer pour liberer l'onde";
   const currentTrackLabel = trackTitle || "L'espace entre les secondes";
+  const bottomTitle = trackTitle || poeticLine;
 
   return (
     <div className="dream-liquid-player w-full max-w-xl">
@@ -910,22 +920,59 @@ export function DreamMirrorPlayer({
               />
             ))}
           </div>
+          <div className="dream-liquid-controls" aria-label="Controles du lecteur">
+            <button
+              type="button"
+              className="dream-liquid-control dream-liquid-control-side dream-liquid-control-prev"
+              aria-label="Piste precedente"
+              onPointerDown={stopShellPointer}
+              onPointerUp={stopShellPointer}
+              onClick={handlePrevious}
+            >
+              <span className="dream-liquid-control-icon" aria-hidden>
+                ←
+              </span>
+              <span className="dream-liquid-control-label">Prev</span>
+            </button>
+            <button
+              type="button"
+              className="dream-liquid-control dream-liquid-control-main"
+              aria-label={isPlaying ? "Mettre en pause" : "Lancer la lecture"}
+              onPointerDown={stopShellPointer}
+              onPointerUp={stopShellPointer}
+              onClick={() => {
+                void handlePlayToggle();
+              }}
+            >
+              <span className="dream-liquid-control-main-core" aria-hidden>
+                {isPlaying ? "II" : "▶"}
+              </span>
+              <span className="dream-liquid-control-main-label">{isPlaying ? "Pause" : "Play"}</span>
+            </button>
+            <button
+              type="button"
+              className="dream-liquid-control dream-liquid-control-side dream-liquid-control-next"
+              aria-label="Piste suivante"
+              onPointerDown={stopShellPointer}
+              onPointerUp={stopShellPointer}
+              onClick={handleNext}
+            >
+              <span className="dream-liquid-control-icon" aria-hidden>
+                →
+              </span>
+              <span className="dream-liquid-control-label">Next</span>
+            </button>
+          </div>
         </div>
 
         <div className="dream-liquid-copy dream-liquid-copy-bottom">
           <p className="dream-liquid-hint">{hintText}</p>
-          <p className="dream-liquid-poetic">{poeticLine}</p>
+          <p className="dream-liquid-poetic">{bottomTitle}</p>
         </div>
 
         <div className="dream-liquid-gesture dream-liquid-gesture-left">←</div>
         <div className="dream-liquid-gesture dream-liquid-gesture-right">→</div>
         {gestureHint ? <div className="dream-liquid-gesture-hint">{hintLabel(gestureHint)}</div> : null}
-      </div>
-
-      <div className="mt-4 space-y-1">
-        <p className="text-[10px] tracking-[0.35em] text-amber-200 uppercase">Experience Liquide</p>
-        <p className="line-clamp-1 text-sm text-white/85">{currentTrackLabel}</p>
-        <p className="text-xs text-white/55">{statusLabel(state, webcamState)}</p>
       </div>
 
       {state === "error" ? (
@@ -937,41 +984,6 @@ export function DreamMirrorPlayer({
           Reessayer
         </button>
       ) : null}
-
-      <div className="mt-4 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => {
-            previous();
-            showHint("previous");
-          }}
-          className="rounded-full border border-amber-200/20 bg-black/50 px-3 py-1 text-[10px] tracking-[0.15em] text-white/75 uppercase hover:border-amber-200/45 hover:bg-amber-400/10"
-        >
-          Prev
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            if (!isPlaying) void ensureWebcam();
-            if (!isPlaying) triggerRipple();
-            playPause();
-            showHint(isPlaying ? "pause" : "play");
-          }}
-          className="rounded-full border border-amber-200/25 bg-black/60 px-4 py-1 text-[10px] tracking-[0.2em] text-amber-50 uppercase hover:border-amber-200/55 hover:bg-amber-400/15"
-        >
-          {isPlaying ? "Pause" : "Play"}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            next();
-            showHint("next");
-          }}
-          className="rounded-full border border-amber-200/20 bg-black/50 px-3 py-1 text-[10px] tracking-[0.15em] text-white/75 uppercase hover:border-amber-200/45 hover:bg-amber-400/10"
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 }

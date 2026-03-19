@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import type { SiteContent } from "@/types/content";
 import type { SocialPost } from "@/types/social";
-import { DreamMirrorPlayer } from "@/components/site/dream-mirror-player";
 import { InteractiveEffects } from "@/components/site/interactive-effects";
 
 type SitePageContentProps = {
@@ -92,26 +91,20 @@ function getYouTubeEmbedUrl(rawUrl: string): string | null {
   return `https://www.youtube-nocookie.com/embed/${id}`;
 }
 
-function getYouTubePlaylistId(rawUrl?: string): string | null {
-  const value = rawUrl?.trim();
-  if (!value) return null;
+const DEFAULT_PORTAL_NARRATIVE = [
+  "Panoplie vous invite a entamer une odyssee mentale pop et psychedelique, une traversee du miroir a la recherche d'un reflet perdu.",
+  "Ce voyage narratif en plusieurs chapitres explore des inconscients vaporeux, ou les identites se fragmentent, flottant entre reve et realite.",
+  "Un voyage pour ceux qui n'ont pas peur de se perdre, au coeur d'eux-memes, ou quelque part de l'autre cote du miroir.",
+];
 
-  try {
-    const url = new URL(value);
-    const list = url.searchParams.get("list");
-    return list ? list : null;
-  } catch {
-    return null;
-  }
-}
-
-const STREAMING_FIELD_BY_PLATFORM_ID: Record<string, string> = {
-  spotify: "spotifyUrl",
-  apple: "appleMusicUrl",
-  deezer: "deezerUrl",
-  ytmusic: "youtubeMusicUrl",
-  ytplaylist: "youtubePlaylistUrl",
-};
+const INTRO_SHARDS = [
+  { key: "tl", className: "portal-shard-tl", rotate: -18, scale: 0.86 },
+  { key: "tr", className: "portal-shard-tr", rotate: 24, scale: 0.74 },
+  { key: "ml", className: "portal-shard-ml", rotate: -36, scale: 0.7 },
+  { key: "mr", className: "portal-shard-mr", rotate: 30, scale: 0.66 },
+  { key: "bl", className: "portal-shard-bl", rotate: -12, scale: 0.82 },
+  { key: "br", className: "portal-shard-br", rotate: 20, scale: 0.8 },
+];
 
 export function SitePageContent({
   content,
@@ -120,20 +113,18 @@ export function SitePageContent({
   editMode = false,
   onEditField,
 }: SitePageContentProps) {
-  const albumStreaming = content.album.streaming ?? {};
-  const youtubePlaylistId = getYouTubePlaylistId(albumStreaming.youtubePlaylistUrl);
-  const platformLinks = [
-    { id: "spotify", label: "Spotify", url: albumStreaming.spotifyUrl },
-    { id: "apple", label: "Apple Music", url: albumStreaming.appleMusicUrl },
-    { id: "deezer", label: "Deezer", url: albumStreaming.deezerUrl },
-    { id: "ytmusic", label: "YouTube Music", url: albumStreaming.youtubeMusicUrl },
-    { id: "ytplaylist", label: "Playlist YouTube", url: albumStreaming.youtubePlaylistUrl },
-  ].flatMap((item) => {
-    const url = item.url?.trim();
-    return url ? [{ id: item.id, label: item.label, url }] : [];
-  });
-
   const autoSocialPosts = !editMode ? latestPosts : [];
+  const introPrompt =
+    content.hero.mantra?.trim() || "Il parait qu'il existe un passage pour traverser nos miroirs...";
+  const narrativeParts = content.album.description
+    .split(/\r?\n\s*\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const narrativeParagraphs = [
+    narrativeParts[0] || DEFAULT_PORTAL_NARRATIVE[0],
+    narrativeParts[1] || DEFAULT_PORTAL_NARRATIVE[1],
+    narrativeParts[2] || DEFAULT_PORTAL_NARRATIVE[2],
+  ];
   const linkBehavior = editMode
     ? {
         onClick: (event: React.MouseEvent) => {
@@ -170,93 +161,63 @@ export function SitePageContent({
         </div>
       </nav>
 
-      <section id="intro" className="flex min-h-screen flex-col items-center justify-center px-6 pt-32 text-center">
-        <div className="reveal-text active space-y-6">
-          <EditableNode editMode={editMode} fieldId="hero.mantra" onEdit={onEditField}>
-            <p className="mantra text-xs md:text-sm">{content.hero.mantra}</p>
-          </EditableNode>
-
-          <EditableNode editMode={editMode} fieldId="hero.bandName" onEdit={onEditField}>
-            <h1 className="cinzel reflect-box text-[15vw] leading-none tracking-tighter md:text-[10vw]" data-text={content.hero.bandName}>
-              {content.hero.bandName}
-            </h1>
-          </EditableNode>
-
-          <EditableNode editMode={editMode} fieldId="hero.subtitle" onEdit={onEditField}>
-            <p className="serif text-xl italic opacity-60 md:text-3xl">{content.hero.subtitle}</p>
-          </EditableNode>
-
-          <EditableNode editMode={editMode} fieldId="hero.kicker" onEdit={onEditField}>
-            <p className="text-[8px] leading-relaxed font-light tracking-[0.5em] opacity-40 uppercase md:text-[10px] md:tracking-[0.8em]">
-              {content.hero.kicker}
-            </p>
-          </EditableNode>
+      <section id="intro" className="portal-intro relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-28 text-center md:pt-36">
+        <div className="portal-deco-layer" aria-hidden>
+          {INTRO_SHARDS.map((shard, index) => (
+            <img
+              key={shard.key}
+              src={content.hero.mirrorImageUrl}
+              alt=""
+              className={`portal-shard ${shard.className}`}
+              style={{
+                transform: `rotate(${shard.rotate}deg) scale(${shard.scale})`,
+                animationDelay: `${index * -1.6}s`,
+              }}
+            />
+          ))}
         </div>
 
-        <EditableNode editMode={editMode} fieldId="hero.mirrorImageUrl" onEdit={onEditField}>
-          <div className="drifting mt-24 opacity-20 md:mt-32">
-            <img src={content.hero.mirrorImageUrl} className="mix-blend-screen w-32 md:w-48" alt="Miroir" />
-          </div>
-        </EditableNode>
+        <div className="portal-intro-content reveal-text active">
+          <EditableNode editMode={editMode} fieldId="hero.mantra" onEdit={onEditField}>
+            <p className="portal-intro-quote serif">{introPrompt}</p>
+          </EditableNode>
+
+          <EditableNode editMode={editMode} fieldId="hero.mirrorImageUrl" onEdit={onEditField}>
+            <a
+              href="#album"
+              aria-label="Traverser vers la suite"
+              className="portal-mirror-link drifting"
+              {...linkBehavior}
+            >
+              <img src={content.hero.mirrorImageUrl} className="portal-mirror-fragment" alt="Fragment de miroir" />
+            </a>
+          </EditableNode>
+        </div>
       </section>
 
-      <section id="album" className="container relative mx-auto grid gap-12 px-6 py-32 md:py-64 lg:grid-cols-12 lg:items-center">
-        <EditableNode editMode={editMode} fieldId="album.coverImageUrl" onEdit={onEditField}>
-          <div className="relative lg:col-span-5">
-            <div className="film-strip drifting aspect-square" style={{ animationDelay: "-2s" }}>
-              <img src={content.album.coverImageUrl} alt="Pochette de l'album" style={{ filter: "none" }} />
-            </div>
-          </div>
-        </EditableNode>
+      <section id="album" className="portal-story-section relative px-6 py-24 md:py-40">
+        <div className="portal-story container mx-auto max-w-4xl space-y-10 md:space-y-16">
+          <EditableNode editMode={editMode} fieldId="album.description" onEdit={onEditField}>
+            <p className="portal-story-paragraph serif">{narrativeParagraphs[0]}</p>
+          </EditableNode>
 
-        <div className="space-y-8 lg:col-span-7 lg:pl-24">
-          {editMode || youtubePlaylistId || platformLinks.length > 0 ? (
-            <div className="space-y-5 pt-4">
-              <EditableNode
-                editMode={editMode}
-                fieldId="album.streaming.youtubePlaylistUrl"
-                onEdit={onEditField}
-              >
-                {youtubePlaylistId ? (
-                  <DreamMirrorPlayer playlistId={youtubePlaylistId} artworkUrl={"https://res.cloudinary.com/dmb2ubsm1/image/upload/v1773329473/bg-panoplie_q0los7.png"} />
-                ) : (
-                  <div className="max-w-xl rounded-md border border-dashed border-white/20 px-4 py-6 text-sm text-white/50">
-                    Ajoute une URL playlist YouTube pour activer le miroir liquide.
-                  </div>
-                )}
-              </EditableNode>
-
-              <div className="flex flex-wrap gap-3">
-                {(editMode
-                  ? [
-                      { id: "spotify", label: "Spotify", url: albumStreaming.spotifyUrl || "#" },
-                      { id: "apple", label: "Apple Music", url: albumStreaming.appleMusicUrl || "#" },
-                      { id: "deezer", label: "Deezer", url: albumStreaming.deezerUrl || "#" },
-                      { id: "ytmusic", label: "YouTube Music", url: albumStreaming.youtubeMusicUrl || "#" },
-                      { id: "ytplaylist", label: "Playlist YouTube", url: albumStreaming.youtubePlaylistUrl || "#" },
-                    ]
-                  : platformLinks
-                ).map((platform) => (
-                  <EditableNode
-                    key={platform.id}
-                    editMode={editMode}
-                    fieldId={`album.streaming.${STREAMING_FIELD_BY_PLATFORM_ID[platform.id] ?? "youtubePlaylistUrl"}`}
-                    onEdit={onEditField}
-                  >
-                    <a
-                      href={platform.url}
-                      className="inline-block border border-cyan-400/40 px-4 py-2 text-[10px] tracking-[0.25em] text-cyan-100 uppercase transition hover:bg-cyan-400/20"
-                      target={editMode ? undefined : "_blank"}
-                      rel={editMode ? undefined : "noreferrer"}
-                      {...linkBehavior}
-                    >
-                      {platform.label}
-                    </a>
-                  </EditableNode>
-                ))}
-              </div>
+          <EditableNode editMode={editMode} fieldId="album.coverImageUrl" onEdit={onEditField}>
+            <div className="portal-story-image-wrap">
+              <img
+                src={content.album.coverImageUrl}
+                alt={content.album.title || "Vision du voyage"}
+                className="portal-story-image"
+              />
             </div>
-          ) : null}
+          </EditableNode>
+
+          <EditableNode editMode={editMode} fieldId="album.description" onEdit={onEditField}>
+            <p className="portal-story-paragraph serif">{narrativeParagraphs[1]}</p>
+          </EditableNode>
+
+          <EditableNode editMode={editMode} fieldId="album.description" onEdit={onEditField}>
+            <p className="portal-story-paragraph serif">{narrativeParagraphs[2]}</p>
+          </EditableNode>
         </div>
       </section>
 
